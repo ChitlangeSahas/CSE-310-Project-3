@@ -25,6 +25,8 @@ public:
     T  pop();
 
     bool has(int n);
+    void sort();
+    int frequency(int n);
 
     void reserve(unsigned int capacity);
     void resize(unsigned int size);
@@ -125,4 +127,45 @@ bool ArrayList<T>::has(int n) {
         }
     }
     return false;
+}
+
+template <class T>
+void selectionSort(T a[], int n) {
+   int i, j, min, temp;
+   for (i = 0; i < n - 1; i++) {
+      min = i;
+      for (j = i + 1; j < n; j++)
+         if (a[j] < a[min])
+            min = j;
+      temp = a[i];
+      a[i] = a[min];
+      a[min] = temp;
+   }
+}
+
+template <class T>
+void ArrayList<T>::sort()
+{
+    selectionSort(buffer, _size);
+    // for (int i = 0; i < _size; ++i)
+    // {
+    //     cout << buffer[i] << " ";
+    // }
+    // cout << endl;
+}
+
+
+
+template <class T>
+int ArrayList<T>::frequency(int n)
+{
+    int f = 0;
+    for (int i = 0; i < _size; ++i)
+    {
+        if (buffer[i] == n)
+        {
+            f++;
+        }
+    }
+    return f;
 }

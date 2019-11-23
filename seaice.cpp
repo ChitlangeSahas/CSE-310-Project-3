@@ -8,7 +8,6 @@
 #include "LinkedList.h"
 #include "ArrayList.h"
 
-#define MAX_WIDTH 63
 /*
 [	63	 ]
 .
@@ -19,14 +18,16 @@
 Layers of those ^^
 */
 
+#define MAX_WIDTH 30
+#define GUI_FEATURES_ENABLE 1
 #define EMPTY 157
 #define LAND 168
-#define R_THRESH 0.95
+#define R_THRESH 0.925
 
 using namespace std;
 
 float year_data_array[16*52][63][63];
-ArrayList<LinkedList> adjecency_list;
+ArrayList<LinkedList> adjecency_list; 
 
 int convert_coordinate_into_linear_index(int x, int y)
 {
@@ -230,6 +231,22 @@ void get_all_pairs_for_x_y(int x, int y)
 	}
 }
 
+void print_progress_bar(float progress)
+{
+    int barWidth = 70;
+
+    std::cout << "[";
+    int pos = barWidth * progress;
+    for (int i = 0; i < barWidth; ++i) {
+        if (i < pos) std::cout << "=";
+        else if (i == pos) std::cout << ">";
+        else std::cout << " ";
+    }
+	    std::cout << "] " << int(progress * 100.0) << " %\r";
+	    std::cout.flush();
+	std::cout << std::endl;
+}
+
 void make_the_graph()
 {
 	int x = 0;
@@ -247,12 +264,18 @@ void make_the_graph()
 		{
 			// get only when it;s not a land / empty
 			get_all_pairs_for_x_y(next_pointer_coordinates[0],next_pointer_coordinates[1]);
+			if (GUI_FEATURES_ENABLE)
+			{
+				float progress = (float)convert_coordinate_into_linear_index(next_pointer_coordinates[0],next_pointer_coordinates[1]) / (MAX_WIDTH*MAX_WIDTH);
+				// cout << progress << endl;
+				print_progress_bar(progress);
+			}
 		}
 		next_pointer_coordinates = move_pointer_forward(next_pointer_coordinates[0], next_pointer_coordinates[1]);
 	}
 
 }
-
+		
 int main(int argc, char const *argv[])
 {	
 	load_year_into_array();
@@ -267,17 +290,31 @@ int main(int argc, char const *argv[])
 	make_the_graph();
 
 	ArrayList<int> degree_distribution;
+	ArrayList<int> list_degree_data;
 
 	for (int i = 0; i < adjecency_list.size(); ++i)
 	{
-		cout << i << " : " ; 
-		adjecency_list[i].print();
+		// cout << i << " : " ; 
+		// adjecency_list[i].print();
+		list_degree_data.push_back(adjecency_list[i].length);
 		if (!(degree_distribution.has(adjecency_list[i].length)))
 		{
 			degree_distribution.push_back(adjecency_list[i].length);
 		}
 	}
 
+	degree_distribution.sort();
+
+	cout << "\n ******************** Histogram  ********************  \n";
+	for (int i = 1; i < degree_distribution.size(); ++i)
+	{
+		cout << degree_distribution[i] << "\t";
+		for (int j = 0; j < list_degree_data.frequency(degree_distribution[i]); j=j+10)
+		{
+			cout << "* ";
+		}
+		cout << endl;
+	}
 
 
 	// system("pause");
