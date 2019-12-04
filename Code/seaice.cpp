@@ -19,7 +19,7 @@
 Layers of those ^^
 */
 
-#define MAX_WIDTH 6
+#define MAX_WIDTH 4
 #define N_YEARS_OF_DATA 16
 #define GUI_FEATURES_ENABLE 1
 #define EMPTY 157
@@ -35,7 +35,6 @@ float year_data_array[16 * 52][MAX_WIDTH][MAX_WIDTH];
 float time_series_mean[MAX_WIDTH][MAX_WIDTH];
 
 // globals not good but cant help for now.
-
 ArrayList<LinkedList> adjecency_list;
 ArrayList<LinkedList> adjecency_list_random_graph;
 ProgressBar progressBar(MAX_WIDTH * MAX_WIDTH, 70, '#', '-');
@@ -381,6 +380,7 @@ void printSolution() {
         cout << endl;
     }
 }
+
 int sum_of_pairs_with(int x, int y) {
     int sum = 0;
     int *next_pointer_coordinates = move_pointer_forward_floyd_warshall(x, y);
@@ -506,11 +506,12 @@ int main(int argc, char const *argv[]) {
             }
         }
 
-        for (int i = 0; i < MAX_WIDTH*MAX_WIDTH; ++i)
+        for (int i = 0; i < adjecency_list.size(); ++i)
         {
-        	for (int j = 0; j < MAX_WIDTH*MAX_WIDTH; ++j)
+        	for (int j = 1; j < adjecency_list[i].length; ++j)
         	{
-        		
+        		graph_f_m[adjecency_list[i].at(0)][adjecency_list[i].at(j)] = 1;
+        		graph_f_m[adjecency_list[i].at(j)][adjecency_list[i].at(0)] = 1;
         	}
         }
         degree_distribution.sort();
