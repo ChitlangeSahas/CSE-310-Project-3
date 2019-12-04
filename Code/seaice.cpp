@@ -19,7 +19,7 @@
 Layers of those ^^
 */
 
-#define MAX_WIDTH 4
+#define MAX_WIDTH 5
 #define N_YEARS_OF_DATA 16
 #define GUI_FEATURES_ENABLE 1
 #define EMPTY 157
@@ -35,6 +35,9 @@ float year_data_array[16 * 52][MAX_WIDTH][MAX_WIDTH];
 float time_series_mean[MAX_WIDTH][MAX_WIDTH];
 
 // globals not good but cant help for now.
+
+int *coordinates_fw = (int *) malloc(2 * sizeof(int));
+
 ArrayList<LinkedList> adjecency_list;
 ArrayList<LinkedList> adjecency_list_random_graph;
 ProgressBar progressBar(MAX_WIDTH * MAX_WIDTH, 70, '#', '-');
@@ -186,7 +189,7 @@ void print_mean_array() {
 
 int *move_pointer_forward(int x, int y)
 {
-    int *coordinates = (int *) malloc(2 * sizeof(int));
+	int *coordinates = (int *) malloc(2 * sizeof(int));
 
     if (y == MAX_WIDTH - 1)
     {
@@ -208,8 +211,7 @@ int *move_pointer_forward(int x, int y)
 }
 
 int *move_pointer_forward_floyd_warshall(int x, int y) {
-    int *coordinates_fw = (int *) malloc(2 * sizeof(int));
-
+    
     if (y == MAX_WIDTH - 1)
     {
         coordinates_fw[0] = x + 1;
@@ -367,6 +369,7 @@ void make_random_graph() {
 // Floyd Marshall;
 int dist[V][V];
 int graph_f_m[V][V];
+
 void printSolution() {
     cout << "The following matrix shows the shortest distances"
             " between every pair of vertices \n";
@@ -388,14 +391,14 @@ int sum_of_pairs_with(int x, int y) {
     while (next_pointer_coordinates[0] < V) {
         if ((dist[x][y] != INF) && (dist[next_pointer_coordinates[0]][next_pointer_coordinates[1]] != INF)) {
             sum += (dist[x][y] + dist[next_pointer_coordinates[0]][next_pointer_coordinates[1]]);
-
-            // cout << sum << endl;
+            cout << dist[x][y] <<endl;      
         }
         next_pointer_coordinates = move_pointer_forward_floyd_warshall(next_pointer_coordinates[0],
                                                                        next_pointer_coordinates[1]);
     }
     return sum;
 }
+
 void floydWarshall() {
     /* dist[][] will be the output matrix
     that will finally have the shortest
@@ -407,9 +410,12 @@ void floydWarshall() {
     the initial values of shortest distances
     are based on shortest paths considering
     no intermediate vertex. */
-    for (i = 0; i < V; i++)
-        for (j = 0; j < V; j++)
+    for (i = 0; i < V; i++){
+        for (j = 0; j < V; j++){
             dist[i][j] = graph_f_m[i][j];
+            cout << dist[i][j] << endl;
+        }
+    }
 
     /* Add all vertices one by one to
     the set of intermediate vertices.
@@ -437,23 +443,25 @@ void floydWarshall() {
     }
 
     // Print the shortest distance matrix  
-    printSolution();  
-    // int x = 0;
-    // int y = 0;
-    // int sum = 0;
-    // int *next_pointer_coordinates = (int *) malloc(2 * sizeof(int));
-    // next_pointer_coordinates[0] = x;
-    // next_pointer_coordinates[1] = y;
+    printSolution();
+    int x = 0;
+    int y = 0;
+    int sum = 0;
+    int *next_pointer_coordinates = (int *) malloc(2 * sizeof(int));
+    next_pointer_coordinates[0] = x;
+    next_pointer_coordinates[1] = y;
 
-    // while (next_pointer_coordinates[0] < (MAX_WIDTH * MAX_WIDTH)) {
-    //     sum += sum_of_pairs_with(next_pointer_coordinates[0], next_pointer_coordinates[1]);
-    //     next_pointer_coordinates = move_pointer_forward_floyd_warshall(next_pointer_coordinates[0],
-    //                                                                    next_pointer_coordinates[1]);
-    // }
+    while (next_pointer_coordinates[0] < (MAX_WIDTH * MAX_WIDTH)) {
+        sum += sum_of_pairs_with(next_pointer_coordinates[0], next_pointer_coordinates[1]);
+        next_pointer_coordinates = move_pointer_forward_floyd_warshall(next_pointer_coordinates[0],
+                                                                       next_pointer_coordinates[1]);
+        cout << next_pointer_coordinates[0] << " , " << next_pointer_coordinates[1] << endl;
+    }
 
-    // cout << "Characteristic Path length = " << (float) sum / (MAX_WIDTH * MAX_WIDTH * MAX_WIDTH * MAX_WIDTH) << endl;
+    cout << "Sum of path lengths = " << sum << endl;
+    cout << "Characteristic Path length = " << (float) sum / (MAX_WIDTH * MAX_WIDTH * MAX_WIDTH * MAX_WIDTH) << endl;
 }
-// ===============
+
 
 int main(int argc, char const *argv[]) {
 //    What R values you want?
@@ -514,6 +522,7 @@ int main(int argc, char const *argv[]) {
         		graph_f_m[adjecency_list[i].at(j)][adjecency_list[i].at(0)] = 1;
         	}
         }
+
         degree_distribution.sort();
 
         cout << endl;
@@ -533,9 +542,25 @@ int main(int argc, char const *argv[]) {
         progressBar.reset();
         cout << endl;
 
-//        connected_components();
+       connected_components();
+       cout << "Floyd Warshall shortest path analysis... " << endl;
+        
         floydWarshall();
 
+   //      if (r_value == 0)
+   //      {
+			// cout << "Characteristic Path length = 0.106825" << endl;
+   //      }
+   //      else if(R_THRESH == 1)
+   //      {
+   //      	cout << "Characteristic Path length = TO BE CALCULATED" << endl;
+   //      }
+   //      else if(R_THRESH == 2)
+   //      {
+   //      	cout << "Characteristic Path length = TO BE CALCULATED" << endl;
+   //      }
+
+    
     }
 
     return 0;
