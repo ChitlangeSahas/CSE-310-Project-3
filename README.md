@@ -25,9 +25,11 @@ Adjecency list was formatted as follows:
 
 An edge was added between two vertices if the `Pearsons Correlation Coefficient` value of the pair (a.k.a the `r_value`) was greater than a pre-defined `r_thresh`  
 The formula for the *sample correlation coefficient*, denoted by `r` is: <br />
+
 <p align="center">
 <img src="images/seaice_2.png">
 </p>
+
 ## Analysis 
 * The graph was proven to be a small world graph using following analyses:
   * Histogram of the vertices degree distribution : small-world graph is characterized by a high degree of local clustering and a small numberof long-range connections.
