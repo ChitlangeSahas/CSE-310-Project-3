@@ -6,7 +6,7 @@
 </p>
 
 * [63] x [63] grid of sensors spread over Beaufort Sea subregion = 3969 sensors
-  * 3969 x 16 (years) x 52 (weeks/years) = 3302208 data points to be analyzed.
+  * 3969 x 16 (years) x 52 (weeks/years) = __3302208 data points__ to be analyzed.
 * Data files are *__binary__* `landmask` files placed in `CSE310_project_subregion` folder.
   * File name formatting `Beaufort_Sea_diffw<week_num>y<year_num>+landmask` 
     * example = `Beaufort_Sea_diffw01y2002+landmask` | week 01 for year 2002.
